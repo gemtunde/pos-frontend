@@ -2,6 +2,7 @@ import React from "react";
 import Greetings from "../components/home/Greetings";
 import MiniCard from "../components/home/MiniCard";
 import RecentOrders from "../components/home/RecentOrders";
+import PopularDishes from "../components/home/PopularDishes";
 import { BsCashCoin } from "react-icons/bs";
 import { GrInProgress } from "react-icons/gr";
 
@@ -28,7 +29,9 @@ const Home = () => {
         <RecentOrders />
       </div>
       {/* right div */}
-      <div className="flex-[2] bg-blue-600"></div>
+      <div className="flex-[2]">
+        <PopularDishes />
+      </div>
     </section>
   );
 };
