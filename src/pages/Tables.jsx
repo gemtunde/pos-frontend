@@ -16,6 +16,7 @@ const Tables = () => {
               status={table.status}
               seat={table.seat}
               initials={table.initial}
+              id={table}
             />
           );
         })}
