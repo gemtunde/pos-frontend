@@ -1,4 +1,4 @@
-# React + Vite
+# Next.js Restaurant POS (Point of Sale) System 
 
 A Next.js Restaurant POS (Point of Sale) System would allow restaurant staff to manage orders, payments, tables, and inventory efficiently using a web-based interface. Given your frontend expertise and tech stack, you could build a performant and scalable POS system with modern UI/UX.
 <img width="1680" alt="Screenshot 2025-03-22 at 13 09 43" src="https://github.com/user-attachments/assets/fba0beac-c89a-47c4-bb9d-b536c61e7fcf" />
