@@ -6,6 +6,9 @@ export const getBgColor = () => {
     "#735f32",
     "#1d2569",
     "#285430",
+    "#f6b100",
+    "#025cca",
+    "#02ca3a",
   ];
   const randombg = Math.floor(Math.random() * bgarr.length);
   const color = bgarr[randombg];

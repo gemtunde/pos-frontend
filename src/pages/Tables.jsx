@@ -14,7 +14,7 @@ const Tables = () => {
               key={table.id}
               name={table.name}
               status={table.status}
-              seat={table.seat}
+              seat={table.seats}
               initials={table.initial}
               id={table}
             />

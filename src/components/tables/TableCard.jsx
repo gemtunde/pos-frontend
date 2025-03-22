@@ -1,13 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { getBgColor } from "../../utils";
 
-const TableCard = ({
-  key,
-  name,
-  status,
-  // seat,
-  initials,
-}) => {
+const TableCard = ({ key, name, status, seat, initials }) => {
   const navigate = useNavigate();
   const handleClick = () => {
     if (status === "Booked") return;
@@ -33,10 +28,17 @@ const TableCard = ({
       </div>
 
       <div className="flex items-center justify-center my-5">
-        <h1 className="text-white bg-[#025cca] rounded-full p-5 text-xl">
+        <h1
+          className="text-white rounded-full p-5 text-xl"
+          style={{ backgroundColor: getBgColor() }}
+        >
           {initials}
         </h1>
       </div>
+      <p className="text-xs text-[#ababab]">
+        Seats:
+        <span className="text-[#f5f5f5]"> {seat}</span>
+      </p>
     </div>
   );
 };
