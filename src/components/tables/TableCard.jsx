@@ -1,18 +1,22 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getBgColor } from "../../utils";
+import { useDispatch } from "react-redux";
+import { updateTable } from "../../redux/slices/customerSlice";
 
 const TableCard = ({ key, name, status, seat, initials }) => {
   const navigate = useNavigate();
-  const handleClick = () => {
+  const dispatch = useDispatch();
+  const handleClick = (name) => {
     if (status === "Booked") return;
+    dispatch(updateTable({ tableNo: name }));
     navigate("/menu");
   };
   return (
     <div
       key={key}
       className="w-[275px] bg-[#262626] p-4 rounded-lg mb-4 cursor-pointer"
-      onClick={handleClick}
+      onClick={() => handleClick(name)}
     >
       <div className="flex items-center justify-between px-1">
         <h1 className="text-[#f5f5f5] text-xl font-semibold">{name}</h1>

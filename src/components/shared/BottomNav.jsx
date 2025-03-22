@@ -5,12 +5,34 @@ import { FaHome } from "react-icons/fa";
 import { MdOutlineReorder, MdTableBar } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "./Modal";
+import { useDispatch } from "react-redux";
+import { setCustomer } from "../../redux/slices/customerSlice.js";
 
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [guestCount, setGuestCount] = useState(0);
+
+  //input
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState(0);
+
+  const handleCreateOrder = () => {
+    //send data to state
+    dispatch(
+      setCustomer({
+        name,
+        phone,
+        guests: guestCount,
+      })
+    );
+
+    navigate("/tables");
+    setIsModalOpen(false);
+  };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -84,6 +106,8 @@ const BottomNav = () => {
           </label>
           <div className="bg-[#1f1f1f] flex items-center rounded-lg p-3 px-4">
             <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               type="text"
               placeholder="customer name"
               className="bg-transparent flex-1 text-white focus:outline-none"
@@ -96,6 +120,8 @@ const BottomNav = () => {
           </label>
           <div className="bg-[#1f1f1f] flex items-center rounded-lg p-3 px-4">
             <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               type="number"
               placeholder="+234 0700000000"
               className="bg-transparent flex-1 text-white focus:outline-none"
@@ -127,10 +153,7 @@ const BottomNav = () => {
           </div>
         </div>
         <button
-          onClick={() => {
-            navigate("/tables");
-            setIsModalOpen(false);
-          }}
+          onClick={handleCreateOrder}
           className=" w-full bg-[#F6B100] text-[#f5f5f5] rounded-lg py-3 mt-8 hover:bg-yellow-700"
         >
           Create order{" "}
