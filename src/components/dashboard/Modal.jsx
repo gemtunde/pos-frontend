@@ -1,11 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
+import { useMutation } from "@tanstack/react-query";
+import { addTable } from "../../https";
+import { enqueueSnackbar } from "notistack";
 
 const Modal = ({ setIsTableModalOpen }) => {
   const handleCloseModal = () => {
     setIsTableModalOpen(false);
   };
+
+  const [tableData, setTableData] = useState({
+    tableNo: "",
+    seats: "",
+  });
+  const handleChange = (e) => {
+    setTableData({
+      ...tableData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(tableData);
+    tableMutation.mutate(tableData);
+  };
+  const tableMutation = useMutation({
+    mutationFn: (reqData) => addTable(reqData),
+    onSuccess: (res) => {
+      const { data } = res;
+      enqueueSnackbar(data.message, { variant: "success" });
+
+      setTableData({
+        tableNo: "",
+        seats: "",
+      });
+
+      setTimeout(() => {
+        setIsTableModalOpen(false);
+      }, 1500);
+    },
+    onError: (error) => {
+      const { response } = error;
+      enqueueSnackbar(response.data.message, { variant: "error" });
+    },
+  });
+
   return (
     <div className="fixed inset-0 bg-[#262626] opacity-95 flex items-center justify-center z-10">
       <motion.div
@@ -26,9 +66,7 @@ const Modal = ({ setIsTableModalOpen }) => {
           </button>
         </div>
         {/* bdy */}
-        <form
-        //onSubmit={handleSubmit}
-        >
+        <form onSubmit={handleSubmit}>
           <div className="mt-4">
             <label className="block text-[#ababab] mb-2 text-sm font-medium">
               Table Number
@@ -37,8 +75,8 @@ const Modal = ({ setIsTableModalOpen }) => {
               <input
                 type="number"
                 name="tableNo"
-                //   value={formData.phone}
-                //   onChange={handleChange}
+                value={tableData.tableNo}
+                onChange={handleChange}
                 placeholder="Table number"
                 required
                 className="bg-transparent flex-1 text-white focus:outline-none"
@@ -53,8 +91,8 @@ const Modal = ({ setIsTableModalOpen }) => {
               <input
                 type="number"
                 name="seats"
-                //   value={formData.phone}
-                //   onChange={handleChange}
+                value={tableData.seats}
+                onChange={handleChange}
                 placeholder="Table number"
                 required
                 className="bg-transparent flex-1 text-white focus:outline-none"
