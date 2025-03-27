@@ -1,21 +1,61 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import { Home, Auth, Orders, Tables, Menu, NotFound } from "./pages";
 import Header from "./components/shared/Header";
 import BottomNav from "./components/shared/BottomNav";
+import { useSelector } from "react-redux";
+import useLoadData from "./components/hooks/useLoadData";
+import FullScreenLoading from "./components/shared/FullScreenLoader";
 
 function Layout() {
   const location = useLocation();
+  const isLoading = useLoadData();
   const hideBottomNav = location.pathname === "/auth"; // Hide BottomNav for Auth page
+  const { isAuth } = useSelector((state) => state.user);
 
+  if (isLoading) return <FullScreenLoading />;
   return (
     <>
       {!hideBottomNav && <Header />}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/tables" element={<Tables />} />
-        <Route path="/menu" element={<Menu />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoutes>
+              <Home />
+            </ProtectedRoutes>
+          }
+        />
+        <Route path="/auth" element={isAuth ? <Navigate to="/" /> : <Auth />} />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoutes>
+              <Orders />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/tables"
+          element={
+            <ProtectedRoutes>
+              <Tables />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/menu"
+          element={
+            <ProtectedRoutes>
+              <Menu />
+            </ProtectedRoutes>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideBottomNav && <BottomNav />} {/* Conditionally render BottomNav */}
@@ -23,26 +63,13 @@ function Layout() {
   );
 }
 
-// function App() {
-//   const location = useLocation();
-//   const hideBottomNav = location.pathname === "/auth";
-//   return (
-//     <>
-//       <BrowserRouter>
-//         <Header />
-//         <Routes>
-//           <Route path="/" element={<Home />} />
-//           <Route path="/auth" element={<Auth />} />
-//           <Route path="/orders" element={<Orders />} />
-//           <Route path="/tables" element={<Tables />} />
-//           <Route path="/menu" element={<Menu />} />
-//           <Route path="*" element={<NotFound />} />
-//         </Routes>
-//         {!hideBottomNav && <BottomNav />}
-//       </BrowserRouter>
-//     </>
-//   );
-// }
+function ProtectedRoutes({ children }) {
+  const { isAuth } = useSelector((state) => state.user);
+  if (!isAuth) {
+    return <Navigate to="/auth" />;
+  }
+  return children;
+}
 function App() {
   return (
     <BrowserRouter>
