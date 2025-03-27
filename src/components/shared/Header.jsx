@@ -1,14 +1,43 @@
 import React from "react";
 import logo from "../../assets/logo.png";
 import { FaBell, FaSearch, FaUserCircle } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { IoLogOut } from "react-icons/io5";
+import { useMutation } from "@tanstack/react-query";
+import { logout } from "../../https";
+import { removeUser } from "../../redux/slices/userSlice";
+import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const userData = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutMutation = useMutation({
+    mutationFn: () => logout(),
+    onSuccess: (res) => {
+      console.log(res);
+
+      dispatch(removeUser());
+      enqueueSnackbar(res.data.message, { variant: "success" });
+      navigate("/auth");
+    },
+    onError: (error) => {
+      console.log(error);
+      enqueueSnackbar(error.response.data.message, { variant: "error" });
+    },
+  });
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
   return (
     <header className="flex justify-between items-center py-4 px-8 bg-[#1a1a1a]">
       {/* logo */}
       <div className="flex items-center gap-2">
         <img src={logo} className="h-8 w-8" alt="logo" />
-        <h1 className="text-lg font-semibold text-[#f5f5f5]">Gemtunde</h1>
+        <h1 className="text-lg font-semibold text-[#f5f5f5]">Gemtunde POS</h1>
       </div>
 
       {/* search */}
@@ -30,10 +59,17 @@ const Header = () => {
           <FaUserCircle className="text-[#f5f5f5] text-4xl" />
           <div className="flex flex-col items-start">
             <h1 className="text-[14px] text-[#f5f5f5] font-semibold">
-              Tunde Elesho
+              {userData.name || "N/A"}
             </h1>
-            <p className="text-xs text-[#ababab] font-medium">Admin</p>
+            <p className="text-xs text-[#ababab] font-medium">
+              {userData.role || "Role"}
+            </p>
           </div>
+          <IoLogOut
+            onClick={handleLogout}
+            className="ml-4 text-white cursor-pointer"
+            size={40}
+          />
         </div>
       </div>
     </header>

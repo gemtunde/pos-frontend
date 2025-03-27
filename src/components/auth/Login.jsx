@@ -2,8 +2,13 @@ import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { login } from "../../https";
 import { enqueueSnackbar } from "notistack";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,6 +31,10 @@ const Login = () => {
     onSuccess: (res) => {
       const { data } = res;
       console.log(data);
+      const { _id, name, email, phone, role } = data.data;
+      dispatch(setUser({ _id, name, email, phone, role }));
+      enqueueSnackbar(data.message, { variant: "success" });
+      navigate("/");
     },
     onError: (error) => {
       const { response } = error;
