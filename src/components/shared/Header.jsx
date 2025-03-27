@@ -3,6 +3,7 @@ import logo from "../../assets/logo.png";
 import { FaBell, FaSearch, FaUserCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { IoLogOut } from "react-icons/io5";
+import { MdDashboard } from "react-icons/md";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "../../https";
 import { removeUser } from "../../redux/slices/userSlice";
@@ -52,6 +53,15 @@ const Header = () => {
 
       {/* Logged user details */}
       <div className="flex items-center gap-4">
+        {userData.role === "Admin" && (
+          <div
+            onClick={() => navigate("/dashboard")}
+            className="bg-[#1f1f1f] rounded-[15px] p-3 cursor-pointer"
+          >
+            <MdDashboard className="text-[#f5f5f5] text-2xl" />
+          </div>
+        )}
+
         <div className="bg-[#1f1f1f] rounded-[15px] p-3 cursor-pointer">
           <FaBell className="text-[#f5f5f5] text-2xl" />
         </div>
