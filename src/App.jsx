@@ -5,7 +5,17 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
-import { Home, Auth, Orders, Tables, Menu, NotFound, Dashboard } from "./pages";
+import {
+  Home,
+  Auth,
+  Orders,
+  Tables,
+  Menu,
+  NotFound,
+  Dashboard,
+  Success,
+  Cancel,
+} from "./pages";
 import Header from "./components/shared/Header";
 import BottomNav from "./components/shared/BottomNav";
 import { useSelector } from "react-redux";
@@ -61,6 +71,22 @@ function Layout() {
           element={
             <ProtectedRoutes>
               <Dashboard />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/success"
+          element={
+            <ProtectedRoutes>
+              <Success />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/cancel"
+          element={
+            <ProtectedRoutes>
+              <Cancel />
             </ProtectedRoutes>
           }
         />

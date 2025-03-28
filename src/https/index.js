@@ -19,3 +19,7 @@ export const getUserData = () => api.get("/api/user");
 //admin table
 export const addTable = (data) => api.post("/api/table", data);
 export const getTables = () => api.get("/api/table");
+
+//payment
+export const createOrderRazorPay = (data) =>
+  api.post("/api/payment/create-order", data);
