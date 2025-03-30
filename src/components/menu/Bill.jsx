@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { getTotalPrice } from "../../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getTotalPrice, removeAllItems } from "../../redux/slices/cartSlice";
 import { enqueueSnackbar } from "notistack";
 import { loadStripe } from "@stripe/stripe-js";
-import { createOrderRazorPay } from "../../https";
+import { addOrder, createOrderRazorPay, updateTable } from "../../https";
+import { useMutation } from "@tanstack/react-query";
+import { removeCustomer } from "../../redux/slices/customerSlice";
 
 // const stripePromise = loadStripe("your_publishable_key");
 // const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
@@ -11,11 +13,13 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const Bill = () => {
   const cartData = useSelector((state) => state.cart);
+  const customerData = useSelector((state) => state.customer);
   const total = useSelector(getTotalPrice);
   const taxRate = 5.25;
   const tax = (total * taxRate) / 100;
   const totalPriceWithTax = total + tax;
 
+  const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState("");
 
   const handlePlaceOrder = async () => {
@@ -31,8 +35,31 @@ const Bill = () => {
       const reqData = {
         amount: Number(totalPriceWithTax),
       };
+
+      //place order
+      const orderData = {
+        customerDetails: {
+          name: customerData.customerName,
+          phone: customerData.customerPhone,
+          guests: customerData.guests,
+        },
+        orderStatus: "In Progress",
+        bills: {
+          total: total,
+          tax: tax,
+          totalWithTax: totalPriceWithTax,
+        },
+        items: cartData,
+        table: customerData?.table?.tableId,
+      };
+      // orderMutation.mutate(orderData);
+      setTimeout(() => {
+        orderMutation.mutate(orderData);
+      }, 1500);
+
       // Request a Checkout Session from the backend
       const { data } = await createOrderRazorPay(reqData);
+      console.log("data on payment", data);
 
       // Redirect to Stripe Checkout
       const result = await stripe.redirectToCheckout({ sessionId: data.id });
@@ -41,6 +68,44 @@ const Bill = () => {
       console.log(error);
     }
   };
+
+  const orderMutation = useMutation({
+    mutationFn: (reqData) => addOrder(reqData),
+    onSuccess: (resData) => {
+      const { data } = resData.data;
+      console.log("order mutation", data);
+
+      enqueueSnackbar("order Placed", {
+        variant: "success",
+      });
+
+      //update table when order is a success
+      const tableData = {
+        status: "Booked",
+        orderId: data._id,
+        tableId: data.table,
+      };
+
+      setTimeout(() => {
+        tableUpdateMutation.mutate(tableData);
+      }, 1500);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const tableUpdateMutation = useMutation({
+    mutationFn: (reqData) => updateTable(reqData),
+    onSuccess: (resData) => {
+      console.log("update table", resData);
+      dispatch(removeCustomer());
+      dispatch(removeAllItems());
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   return (
     <>

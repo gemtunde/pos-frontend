@@ -2,6 +2,8 @@
 
 A Next.js Restaurant POS (Point of Sale) System would allow restaurant staff to manage orders, payments, tables, and inventory efficiently using a web-based interface.
 
+https://pos-frontend-gemtunde-gemtundes-projects.vercel.app
+
 <img width="1680" alt="Screenshot 2025-03-22 at 13 09 43" src="https://github.com/user-attachments/assets/fba0beac-c89a-47c4-bb9d-b536c61e7fcf" />
 
 <img width="1680" alt="Screenshot 2025-03-22 at 13 08 52" src="https://github.com/user-attachments/assets/18ed063a-c527-40a9-b1bc-5726abfde72f" />
